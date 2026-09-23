@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>모자보건사업 검색</title>
+<meta name="description" content="2026년 모자보건사업 안내 발간자료를 키워드 클릭이나 검색으로 빠르게 찾아보는 도구">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=Nanum+Gothic+Coding:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  :root{
+    --bg:#F6F3EC;
+    --surface:#FFFFFF;
+    --surface-2:#FBF9F4;
+    --ink:#20262A;
+    --ink-soft:#5B6A66;
+    --ink-faint:#8A968F;
+    --line:#E3DECD;
+    --line-strong:#CFC8AF;
+    --primary:#1D6E6B;
+    --primary-dark:#123F3D;
+    --primary-soft:#E3EFEC;
+    --accent:#D96B44;
+    --accent-soft:#FBE7DC;
+    --mark-bg:#FCE29A;
+    --mark-ink:#3A2E05;
+    --shadow: 0 1px 2px rgba(20,30,28,.04), 0 8px 24px -12px rgba(20,30,28,.18);
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12171A;
+      --surface:#1A2124;
+      --surface-2:#1F272A;
+      --ink:#EAEDE9;
+      --ink-soft:#A7B4AE;
+      --ink-faint:#77857F;
+      --line:#2B3438;
+      --line-strong:#3C4A47;
+      --primary:#57C2B8;
+      --primary-dark:#0E2C2A;
+      --primary-soft:#193634;
+      --accent:#EE8F66;
+      --accent-soft:#3A2A20;
+      --mark-bg:#5B4B12;
+      --mark-ink:#FCE9B0;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 28px -12px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12171A;
+    --surface:#1A2124;
+    --surface-2:#1F272A;
+    --ink:#EAEDE9;
+    --ink-soft:#A7B4AE;
+    --ink-faint:#77857F;
+    --line:#2B3438;
+    --line-strong:#3C4A47;
+    --primary:#57C2B8;
+    --primary-dark:#0E2C2A;
+    --primary-soft:#193634;
+    --accent:#EE8F66;
+    --accent-soft:#3A2A20;
+    --mark-bg:#5B4B12;
+    --mark-ink:#FCE9B0;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 28px -12px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Noto Sans KR', -apple-system, sans-serif;
+    line-height:1.6;
+    min-height:100%;
+  }
+  h1,h2,h3,.serif{font-family:'Noto Serif KR', serif}
+  ::selection{background:var(--mark-bg); color:var(--mark-ink)}
+
+  a{color:inherit}
+  button{font-family:inherit}
+
+  .app{
+    max-width:1280px;
+    margin:0 auto;
+    padding: 20px 16px calc(40px + env(safe-area-inset-bottom,0px));
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  /* ---------- Header ---------- */
+  .topbar{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    flex-wrap:wrap;
+    justify-content:space-between;
+  }
+  .brand{display:flex; align-items:center; gap:12px}
+  .brand-badge{
+    width:44px;height:44px;border-radius:12px;
+    background:linear-gradient(155deg, var(--primary), var(--primary-dark));
+    color:#fff; display:flex;align-items:center;justify-content:center;
+    font-family:'Noto Serif KR',serif; font-weight:700; font-size:15px;
+    flex:none;
+    box-shadow: var(--shadow);
+  }
+  .brand-text h1{font-size:19px; margin:0; font-weight:700; letter-spacing:-.01em}
+  .brand-text p{margin:2px 0 0; font-size:12.5px; color:var(--ink-soft)}
+
+  .stats{display:flex; gap:18px; flex-wrap:wrap}
+  .stat{text-align:right}
+  .stat b{display:block; font-family:'Noto Serif KR',serif; font-size:18px; color:var(--primary-dark)}
+  :root[data-theme="dark"] .stat b{color:var(--primary)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stat b{color:var(--primary)}}
+  .stat span{font-size:11px; color:var(--ink-faint)}
+
+  /* ---------- Search ---------- */
+  .searchbar{
+    position:relative;
+    background:var(--surface);
+    border:1.5px solid var(--line-strong);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    display:flex;
+    align-items:center;
+    padding:4px 4px 4px 16px;
+    gap:8px;
+    transition:border-color .15s;
+  }
+  .searchbar:focus-within{border-color:var(--primary)}
+  .searchbar svg{flex:none; opacity:.55}
+  .searchbar input{
+    flex:1; border:0; outline:0; background:transparent;
+    font-size:16px; padding:12px 4px; color:var(--ink); font-family:inherit;
+    min-width:0;
+  }
+  .searchbar input::placeholder{color:var(--ink-faint)}
+  .search-clear{
+    flex:none; border:0; background:var(--surface-2); color:var(--ink-soft);
+    width:30px;height:30px;border-radius:8px; cursor:pointer; display:none;
+    align-items:center;justify-content:center; font-size:15px;
+  }
+  .search-clear.show{display:flex}
+  .search-go{
+    flex:none; border:0; background:var(--primary); color:#fff;
+    padding:11px 18px; border-radius:10px; font-weight:600; font-size:14px;
+    cursor:pointer; letter-spacing:.01em;
+  }
+  .search-go:hover{background:var(--primary-dark)}
+
+  /* ---------- Layout ---------- */
+  .layout{display:flex; gap:20px; align-items:flex-start}
+  .sidebar{
+    width:298px; flex:none;
+    display:flex; flex-direction:column; gap:16px;
+    position:sticky; top:16px;
+    max-height:calc(100vh - 32px);
+    overflow:auto;
+    padding-right:2px;
+  }
+  .main{flex:1; min-width:0}
+
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 14px 16px;
+  }
+  .panel h2{
+    font-size:12px; text-transform:uppercase; letter-spacing:.09em;
+    color:var(--ink-faint); margin:0 0 10px; font-family:'Noto Sans KR';
+    font-weight:700;
+  }
+
+  .chipgroup + .chipgroup{margin-top:14px}
+  .chipgroup h3{
+    font-size:11px; color:var(--primary-dark); margin:0 0 7px;
+    font-weight:700; letter-spacing:.02em;
+  }
+  :root[data-theme="dark"] .chipgroup h3{color:var(--primary)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chipgroup h3{color:var(--primary)}}
+  .chips{display:flex; flex-wrap:wrap; gap:6px}
+  .chip{
+    border:1px solid var(--line-strong); background:var(--surface-2);
+    color:var(--ink); font-size:12.5px; padding:6px 11px; border-radius:999px;
+    cursor:pointer; transition:.12s; white-space:nowrap;
+  }
+  .chip:hover{border-color:var(--primary); color:var(--primary-dark)}
+  :root[data-theme="dark"] .chip:hover{color:var(--primary)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip:hover{color:var(--primary)}}
+  .chip.active{background:var(--primary); border-color:var(--primary); color:#fff}
+
+  /* TOC tree */
+  .toc-chap{border-bottom:1px solid var(--line)}
+  .toc-chap:last-child{border-bottom:0}
+  .toc-chap-btn{
+    width:100%; text-align:left; background:none; border:0; cursor:pointer;
+    padding:9px 2px; display:flex; align-items:center; gap:9px; color:var(--ink);
+  }
+  .toc-roman{
+    flex:none; width:26px;height:26px;border-radius:7px; background:var(--primary-soft);
+    color:var(--primary-dark); display:flex;align-items:center;justify-content:center;
+    font-family:'Noto Serif KR',serif; font-size:12px; font-weight:700;
+  }
+  :root[data-theme="dark"] .toc-roman{color:var(--primary)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .toc-roman{color:var(--primary)}}
+  .toc-chap-title{flex:1; font-size:13px; font-weight:600; line-height:1.35}
+  .toc-caret{flex:none; font-size:10px; color:var(--ink-faint); transition:transform .15s}
+  .toc-chap.open .toc-caret{transform:rotate(90deg)}
+  .toc-sections{display:none; padding:0 0 8px 35px; flex-direction:column; gap:1px}
+  .toc-chap.open .toc-sections{display:flex}
+  .toc-sec-btn{
+    text-align:left; background:none; border:0; cursor:pointer; color:var(--ink-soft);
+    font-size:12.5px; padding:5px 8px; border-radius:6px; line-height:1.4;
+  }
+  .toc-sec-btn:hover{background:var(--surface-2); color:var(--ink)}
+  .toc-sec-btn.current{background:var(--accent-soft); color:var(--accent); font-weight:700}
+
+  /* ---------- Main content states ---------- */
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px;
+  }
+
+  .hero{
+    background:linear-gradient(160deg, var(--primary-soft), var(--surface) 65%);
+    border:1px solid var(--line);
+  }
+  .hero h2{font-size:20px; margin:0 0 8px}
+  .hero p{margin:0; color:var(--ink-soft); font-size:14px; max-width:60ch}
+  .hero-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:10px; margin-top:18px;
+  }
+  .chapter-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:9px;
+    padding:13px 14px; cursor:pointer; text-align:left; display:flex; gap:10px;
+    transition:.12s;
+  }
+  .chapter-card:hover{border-color:var(--primary); box-shadow:var(--shadow)}
+  .chapter-card .toc-roman{width:30px;height:30px;font-size:13px}
+  .chapter-card-body b{display:block; font-size:13.5px; margin-bottom:2px}
+  .chapter-card-body span{font-size:11.5px; color:var(--ink-faint)}
+
+  .result-row{
+    display:flex; gap:14px; padding:14px 4px; border-bottom:1px solid var(--line);
+    cursor:pointer; align-items:flex-start;
+  }
+  .result-row:hover, .result-row:focus-visible{background:var(--surface-2); outline:none}
+  .result-row:last-child{border-bottom:0}
+  .result-pagebadge{
+    flex:none; width:52px; text-align:center; padding-top:2px;
+  }
+  .result-pagebadge b{display:block; font-family:'Noto Serif KR',serif; font-size:16px; color:var(--primary-dark)}
+  :root[data-theme="dark"] .result-pagebadge b{color:var(--primary)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .result-pagebadge b{color:var(--primary)}}
+  .result-pagebadge span{font-size:10px; color:var(--ink-faint)}
+  .result-body{flex:1; min-width:0}
+  .result-crumb{font-size:11.5px; color:var(--accent); font-weight:700; margin-bottom:3px}
+  .result-snippet{font-size:13.5px; color:var(--ink-soft); line-height:1.55}
+  .result-snippet mark{background:var(--mark-bg); color:var(--mark-ink); border-radius:2px; padding:0 1px}
+  .result-count{font-size:11px; color:var(--ink-faint); flex:none; padding-top:4px}
+
+  .results-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px; gap:10px; flex-wrap:wrap}
+  .results-head h2{font-size:15px; margin:0}
+  .results-head span{font-size:12.5px; color:var(--ink-faint)}
+
+  /* Page viewer */
+  .page-toolbar{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;
+  }
+  .navbtn{
+    border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink);
+    width:34px;height:34px;border-radius:8px; cursor:pointer; display:flex;
+    align-items:center;justify-content:center; font-size:15px; flex:none;
+  }
+  .navbtn:hover:not(:disabled){border-color:var(--primary); color:var(--primary-dark)}
+  .navbtn:disabled{opacity:.35; cursor:default}
+  .page-crumb{flex:1; min-width:160px}
+  .page-crumb .c1{font-size:11px; color:var(--accent); font-weight:700}
+  .page-crumb .c2{font-size:14px; font-weight:700}
+  .jumpform{display:flex; align-items:center; gap:6px}
+  .jumpform input{
+    width:64px; border:1px solid var(--line-strong); border-radius:8px; padding:7px 8px;
+    background:var(--surface-2); color:var(--ink); font-size:13px; text-align:center;
+  }
+  .jumpform button{
+    border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink-soft);
+    border-radius:8px; padding:7px 11px; font-size:12.5px; cursor:pointer;
+  }
+  .jumpform button:hover{color:var(--primary-dark)}
+
+  .pagetext{
+    font-family:'Nanum Gothic Coding','Noto Sans KR',monospace;
+    font-size:12.8px; line-height:1.72; white-space:pre-wrap; word-break:break-word;
+    background:var(--surface-2); border:1px solid var(--line); border-radius:8px;
+    padding:20px 18px; overflow-x:auto; color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .pagetext mark{background:var(--mark-bg); color:var(--mark-ink); border-radius:2px}
+
+  .empty-hint{color:var(--ink-faint); font-size:13px; text-align:center; padding:30px 10px}
+
+  footer{
+    text-align:center; color:var(--ink-faint); font-size:11.5px; padding-top:8px;
+  }
+
+  .mobile-toc-toggle{display:none}
+
+  @media (max-width:860px){
+    .layout{flex-direction:column}
+    .sidebar{
+      width:100%; position:static; max-height:none;
+    }
+    .stats{display:none}
+    .hero-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  }
+
+  /* ---------- Chat assistant ---------- */
+  .chat-fab{
+    position:fixed; right:20px; bottom:calc(20px + env(safe-area-inset-bottom,0px));
+    width:56px; height:56px; border-radius:50%; border:0; cursor:pointer;
+    background:linear-gradient(155deg, var(--accent), #B94F2C);
+    color:#fff; box-shadow:0 6px 20px -6px rgba(0,0,0,.4), var(--shadow);
+    display:flex; align-items:center; justify-content:center; z-index:60;
+    transition:transform .15s;
+  }
+  .chat-fab:hover{transform:translateY(-2px)}
+  .chat-fab .dot{
+    position:absolute; top:6px; right:6px; width:9px;height:9px;border-radius:50%;
+    background:#FCE29A; border:2px solid var(--surface);
+  }
+
+  .chat-panel{
+    position:fixed; right:20px; bottom:calc(88px + env(safe-area-inset-bottom,0px));
+    width:380px; max-width:calc(100vw - 32px); height:min(600px, 72vh);
+    background:var(--surface); border:1px solid var(--line); border-radius:16px;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,.35), var(--shadow);
+    display:flex; flex-direction:column; overflow:hidden; z-index:60;
+  }
+  .chat-panel[hidden]{display:none}
+  .chat-head{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:8px;
+    padding:14px 14px 12px; border-bottom:1px solid var(--line);
+    background:var(--primary-soft);
+  }
+  .chat-head b{font-size:14px; font-family:'Noto Serif KR',serif}
+  .chat-head .chat-sub{display:block; font-size:11px; color:var(--ink-soft); margin-top:2px}
+  .chat-head .navbtn{background:transparent; border-color:transparent}
+
+  .chat-log{flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px}
+  .msg{max-width:86%; padding:9px 12px; border-radius:12px; font-size:13.5px; line-height:1.55; white-space:pre-wrap; word-break:break-word}
+  .msg.user{align-self:flex-end; background:var(--primary); color:#fff; border-bottom-right-radius:3px}
+  .msg.bot{align-self:flex-start; background:var(--surface-2); border:1px solid var(--line); color:var(--ink); border-bottom-left-radius:3px}
+  .msg.bot.thinking{color:var(--ink-faint); font-style:italic}
+  .msg.system{align-self:stretch; background:transparent; color:var(--ink-faint); font-size:12px; text-align:center; max-width:100%}
+
+  .chat-examples{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+  .chat-ex-chip{
+    border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft);
+    font-size:11.5px; padding:5px 10px; border-radius:999px; cursor:pointer;
+  }
+  .chat-ex-chip:hover{border-color:var(--primary); color:var(--primary-dark)}
+
+  .chat-refs{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+  .chat-ref-chip{
+    border:1px solid var(--line-strong); background:var(--surface); color:var(--primary-dark);
+    font-size:11px; font-weight:700; padding:4px 9px; border-radius:999px; cursor:pointer;
+  }
+  :root[data-theme="dark"] .chat-ref-chip{color:var(--primary)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chat-ref-chip{color:var(--primary)}}
+  .chat-ref-chip:hover{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+
+  .chat-inputrow{
+    display:flex; align-items:center; gap:7px; padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));
+    border-top:1px solid var(--line); background:var(--surface);
+  }
+  .chat-inputrow input{
+    flex:1; min-width:0; border:1px solid var(--line-strong); border-radius:10px;
+    padding:9px 12px; font-size:13.5px; background:var(--surface-2); color:var(--ink); font-family:inherit;
+  }
+  .chat-inputrow input:focus{outline:none; border-color:var(--primary)}
+  .chat-send{
+    flex:none; border:0; background:var(--primary); color:#fff; width:36px;height:36px;
+    border-radius:10px; cursor:pointer; display:flex;align-items:center;justify-content:center;
+  }
+  .chat-send:disabled{opacity:.5; cursor:default}
+  .mic-btn{
+    flex:none; border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink-soft);
+    width:36px;height:36px; border-radius:10px; cursor:pointer; display:flex; align-items:center;justify-content:center;
+    position:relative;
+  }
+  .mic-btn.listening{border-color:var(--accent); color:var(--accent); animation:mic-pulse 1.4s ease-in-out infinite}
+  @keyframes mic-pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(217,107,68,.35)}
+    50%{box-shadow:0 0 0 7px rgba(217,107,68,0)}
+  }
+
+  @media (max-width:480px){
+    .chat-panel{ right:16px; left:16px; width:auto; bottom:calc(84px + env(safe-area-inset-bottom,0px)) }
+    .chat-fab{ right:16px }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-badge">母子</div>
+      <div class="brand-text">
+        <h1>2026년 모자보건사업 안내</h1>
+        <p>키워드를 클릭하거나 검색해서 발간자료를 바로 찾아보세요</p>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="searchbar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="searchInput" type="text" placeholder="예: 국민행복카드, 지원대상, 서식, 냉동난자 해동비…" autocomplete="off">
+    <button class="search-clear" id="clearBtn" title="지우기">✕</button>
+    <button class="search-go" id="goBtn">검색</button>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="panel" id="keywordPanel">
+        <h2>바로가기 키워드</h2>
+        <div id="chipgroups"></div>
+      </div>
+      <div class="panel">
+        <h2>목차</h2>
+        <div id="tocTree"></div>
+      </div>
+    </aside>
+
+    <main class="main" id="mainView"></main>
+  </div>
+
+  <footer>2026년 모자보건사업 안내 (보건복지부) · 원문 PDF 텍스트 기반 검색 도구 · 표·서식 등 복잡한 레이아웃은 원문과 배치가 다를 수 있습니다</footer>
+</div>
+
+<button class="chat-fab" id="chatFab" title="음성/채팅으로 물어보기">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <span class="dot"></span>
+</button>
+
+<div class="chat-panel" id="chatPanel" hidden>
+  <div class="chat-head">
+    <div>
+      <b>모자보건사업 도우미</b>
+      <span class="chat-sub">자료 발췌 기반 AI 답변 · 참고용이며 원문 확인이 필요해요</span>
+    </div>
+    <button class="navbtn" id="chatClose">✕</button>
+  </div>
+  <div class="chat-log" id="chatLog"></div>
+  <div class="chat-inputrow">
+    <button class="mic-btn" id="micBtn" title="음성으로 질문하기" hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
+    <input id="chatInput" type="text" placeholder="예: 고위험 임산부 지원대상이 누구인가요?" autocomplete="off">
+    <button class="chat-send" id="chatSend" title="전송">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var DATA = null, PAGES = null, KEYWORDS = null;
+  var mainView = document.getElementById('mainView');
+  var searchInput = document.getElementById('searchInput');
+  var clearBtn = document.getElementById('clearBtn');
+  var goBtn = document.getElementById('goBtn');
+  var chipgroups = document.getElementById('chipgroups');
+  var tocTree = document.getElementById('tocTree');
+  var statsEl = document.getElementById('stats');
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+
+  Promise.all([
+    fetch('data/app_data.json').then(function(r){return r.json();}),
+    fetch('data/app_pages.json').then(function(r){return r.json();}),
+    fetch('data/keywords.json').then(function(r){return r.json();})
+  ]).then(function(results){
+    DATA = results[0]; PAGES = results[1]; KEYWORDS = results[2];
+    init();
+  }).catch(function(err){
+    mainView.innerHTML = '<div class="card"><p>데이터를 불러오지 못했습니다: '+esc(err.message)+'</p></div>';
+  });
+
+  function init(){
+    renderStats();
+    renderChips();
+    renderToc();
+    bindEvents();
+    routeFromHash();
+    window.addEventListener('popstate', routeFromHash);
+  }
+
+  function setHash(h){
+    history.pushState(null, '', h ? ('#'+h) : location.pathname+location.search);
+  }
+
+  function renderStats(){
+    var chapCount = DATA.toc.length;
+    var secCount = DATA.toc.reduce(function(a,c){return a+c.sections.length;},0);
+    var lastPrinted = 0;
+    DATA.toc.forEach(function(c){c.sections.forEach(function(s){ if(s.printedPage>lastPrinted) lastPrinted=s.printedPage; });});
+    statsEl.innerHTML =
+      '<div class="stat"><b>'+chapCount+'</b><span>사업 영역</span></div>' +
+      '<div class="stat"><b>'+secCount+'</b><span>세부 항목</span></div>' +
+      '<div class="stat"><b>'+DATA.pageCount+'</b><span>전체 쪽</span></div>';
+  }
+
+  function renderChips(){
+    chipgroups.innerHTML = KEYWORDS.groups.map(function(g){
+      return '<div class="chipgroup"><h3>'+esc(g.label)+'</h3><div class="chips">' +
+        g.items.map(function(it){
+          return '<button class="chip" data-q="'+esc(it.query)+'">'+esc(it.label)+'</button>';
+        }).join('') + '</div></div>';
+    }).join('');
+    chipgroups.addEventListener('click', function(e){
+      var btn = e.target.closest('.chip');
+      if(!btn) return;
+      runSearch(btn.getAttribute('data-q'));
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  }
+
+  function renderToc(){
+    tocTree.innerHTML = DATA.toc.map(function(c, ci){
+      return '<div class="toc-chap" data-ci="'+ci+'">' +
+        '<button class="toc-chap-btn">' +
+          '<span class="toc-roman">'+esc(c.roman)+'</span>' +
+          '<span class="toc-chap-title">'+esc(c.title)+'</span>' +
+          '<span class="toc-caret">▶</span>' +
+        '</button>' +
+        '<div class="toc-sections">' +
+          c.sections.map(function(s,si){
+            return '<button class="toc-sec-btn" data-ci="'+ci+'" data-si="'+si+'">'+s.num+'. '+esc(s.title)+'</button>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    tocTree.addEventListener('click', function(e){
+      var chapBtn = e.target.closest('.toc-chap-btn');
+      if(chapBtn){
+        var wrap = chapBtn.parentElement;
+        var wasOpen = wrap.classList.contains('open');
+        tocTree.querySelectorAll('.toc-chap.open').forEach(function(el){el.classList.remove('open');});
+        if(!wasOpen) wrap.classList.add('open');
+        if(!wasOpen){
+          var ci = +wrap.getAttribute('data-ci');
+          goToPage(DATA.toc[ci].physicalPage);
+        }
+        return;
+      }
+      var secBtn = e.target.closest('.toc-sec-btn');
+      if(secBtn){
+        var ci2 = +secBtn.getAttribute('data-ci');
+        var si2 = +secBtn.getAttribute('data-si');
+        goToPage(DATA.toc[ci2].sections[si2].physicalPage);
+      }
+    });
+  }
+
+  function bindEvents(){
+    var t;
+    searchInput.addEventListener('input', function(){
+      clearBtn.classList.toggle('show', searchInput.value.length>0);
+      clearTimeout(t);
+      t = setTimeout(function(){ runSearch(searchInput.value); }, 220);
+    });
+    searchInput.addEventListener('keydown', function(e){
+      if(e.key==='Enter'){ clearTimeout(t); runSearch(searchInput.value); }
+    });
+    goBtn.addEventListener('click', function(){ runSearch(searchInput.value); });
+    clearBtn.addEventListener('click', function(){
+      searchInput.value=''; clearBtn.classList.remove('show');
+      setHash(''); renderLanding();
+    });
+  }
+
+  function routeFromHash(){
+    var h = location.hash.replace(/^#/, '');
+    if(!h){ renderLanding(); searchInput.value=''; clearBtn.classList.remove('show'); return; }
+    var mQ = h.match(/^q=(.*)$/);
+    var mP = h.match(/^p=(\d+)$/);
+    if(mQ){
+      var q = decodeURIComponent(mQ[1]);
+      searchInput.value = q; clearBtn.classList.toggle('show', q.length>0);
+      renderResults(q, false);
+    } else if(mP){
+      renderPage(+mP[1], false, null);
+    } else {
+      renderLanding();
+    }
+  }
+
+  function runSearch(q){
+    q = (q||'').trim();
+    if(!q){ setHash(''); return; }
+    setHash('q=' + encodeURIComponent(q));
+    renderResults(q, true);
+  }
+
+  function goToPage(phys, highlight){
+    if(phys==null) return;
+    setHash('p=' + phys);
+    renderPage(phys, true, highlight||null);
+  }
+
+  function chapterOf(phys){
+    var b = DATA.breadcrumb[phys];
+    if(!b) return {chapter:null, section:null};
+    return b;
+  }
+
+  function pageLabel(phys){
+    var printed = DATA.printedOf[phys];
+    return printed ? (printed+'쪽') : '부록/서식';
+  }
+
+  function renderLanding(){
+    tocTree.querySelectorAll('.toc-chap.open').forEach(function(el){el.classList.remove('open');});
+    var cards = DATA.toc.map(function(c, ci){
+      var firstSec = c.sections[0];
+      var lastSec = c.sections[c.sections.length-1];
+      return '<button class="chapter-card" data-ci="'+ci+'">' +
+        '<span class="toc-roman">'+esc(c.roman)+'</span>' +
+        '<span class="chapter-card-body"><b>'+esc(c.title)+'</b>' +
+        '<span>'+c.sections.length+'개 항목 · '+c.printedPage+'~'+ (lastSec?lastSec.printedPage:c.printedPage) +'쪽</span></span>' +
+      '</button>';
+    }).join('');
+
+    mainView.innerHTML =
+      '<div class="card hero">' +
+        '<h2>무엇을 찾으시나요?</h2>' +
+        '<p>좌측 키워드를 눌러 바로 이동하거나, 위 검색창에 사업명·서류명·지원기준 등을 입력해 원문에서 바로 찾을 수 있어요.</p>' +
+        '<div class="hero-grid">' + cards + '</div>' +
+      '</div>';
+
+    mainView.querySelector('.hero-grid').addEventListener('click', function(e){
+      var btn = e.target.closest('.chapter-card');
+      if(!btn) return;
+      var ci = +btn.getAttribute('data-ci');
+      goToPage(DATA.toc[ci].physicalPage);
+    });
+  }
+
+  function makeSnippet(text, q){
+    var norm = text.replace(/\s+/g,' ');
+    var idx = norm.toLowerCase().indexOf(q.toLowerCase());
+    if(idx<0) return esc(norm.slice(0,120)) + '…';
+    var start = Math.max(0, idx-45);
+    var end = Math.min(norm.length, idx+q.length+65);
+    var pre = (start>0?'…':'') + esc(norm.slice(start, idx));
+    var hit = esc(norm.slice(idx, idx+q.length));
+    var post = esc(norm.slice(idx+q.length, end)) + (end<norm.length?'…':'');
+    return pre + '<mark>' + hit + '</mark>' + post;
+  }
+
+  function renderResults(q, scroll){
+    var qlc = q.toLowerCase();
+    var hits = [];
+    for(var i=0;i<PAGES.length;i++){
+      var text = PAGES[i];
+      if(!text) continue;
+      var lc = text.toLowerCase();
+      var count = 0, pos = 0;
+      while(true){
+        var idx = lc.indexOf(qlc, pos);
+        if(idx<0) break;
+        count++; pos = idx + qlc.length;
+        if(count>200) break;
+      }
+      if(count>0) hits.push({phys:i, count:count});
+    }
+    hits.sort(function(a,b){ return b.count-a.count || a.phys-b.phys; });
+
+    var shown = hits.slice(0,80);
+    var head = '<div class="results-head"><h2>“'+esc(q)+'” 검색 결과</h2>' +
+      '<span>'+hits.length+'개 쪽에서 발견'+(hits.length>shown.length?' · 상위 '+shown.length+'개 표시':'')+'</span></div>';
+
+    if(hits.length===0){
+      mainView.innerHTML = '<div class="card">' + head +
+        '<div class="empty-hint">일치하는 내용을 찾지 못했습니다. 다른 단어로 다시 시도해 보세요.</div></div>';
+      if(scroll) window.scrollTo({top:0, behavior:'smooth'});
+      return;
+    }
+
+    var rows = shown.map(function(h){
+      var bc = chapterOf(h.phys);
+      var snip = makeSnippet(PAGES[h.phys], q);
+      return '<div class="result-row" data-phys="'+h.phys+'" role="button" tabindex="0">' +
+        '<div class="result-pagebadge"><b>'+ (DATA.printedOf[h.phys] || '-') +'</b><span>쪽</span></div>' +
+        '<div class="result-body">' +
+          '<div class="result-crumb">'+esc(bc.chapter||'')+(bc.section?' · '+esc(bc.section):'')+'</div>' +
+          '<div class="result-snippet">'+snip+'</div>' +
+        '</div>' +
+        '<div class="result-count">'+h.count+'회</div>' +
+      '</div>';
+    }).join('');
+
+    mainView.innerHTML = '<div class="card">' + head + '<div>' + rows + '</div></div>';
+    mainView.querySelectorAll('.result-row').forEach(function(row){
+      row.addEventListener('click', function(){
+        goToPage(+row.getAttribute('data-phys'), q);
+      });
+      row.addEventListener('keydown', function(e){
+        if(e.key==='Enter' || e.key===' '){ e.preventDefault(); goToPage(+row.getAttribute('data-phys'), q); }
+      });
+    });
+    if(scroll) window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function highlightText(text, q){
+    var t = esc(text);
+    if(!q) return t;
+    try{
+      var re = new RegExp(escRe(esc(q)), 'gi');
+      return t.replace(re, function(m){ return '<mark>'+m+'</mark>'; });
+    }catch(e){ return t; }
+  }
+
+  function markCurrentToc(phys){
+    var bc = chapterOf(phys);
+    tocTree.querySelectorAll('.toc-sec-btn.current').forEach(function(el){el.classList.remove('current');});
+    tocTree.querySelectorAll('.toc-chap.open').forEach(function(el){el.classList.remove('open');});
+    DATA.toc.forEach(function(c, ci){
+      c.sections.forEach(function(s, si){
+        var label = c.roman+' '+c.title;
+        if(label===bc.chapter && (s.num+'. '+s.title)===bc.section){
+          var btn = tocTree.querySelector('.toc-sec-btn[data-ci="'+ci+'"][data-si="'+si+'"]');
+          if(btn){ btn.classList.add('current'); btn.closest('.toc-chap').classList.add('open'); }
+        }
+      });
+    });
+  }
+
+  function renderPage(phys, scroll, highlight){
+    if(phys<0) phys=0;
+    if(phys>=DATA.pageCount) phys = DATA.pageCount-1;
+    var text = PAGES[phys] || '(이 쪽에는 추출된 본문이 없습니다)';
+    var bc = chapterOf(phys);
+    markCurrentToc(phys);
+
+    var html =
+      '<div class="card">' +
+        '<div class="page-toolbar">' +
+          '<button class="navbtn" id="prevBtn" '+(phys<=0?'disabled':'')+'>‹</button>' +
+          '<div class="page-crumb"><div class="c1">'+esc(bc.chapter||'')+'</div>' +
+            '<div class="c2">'+esc(bc.section||'')+'</div></div>' +
+          '<button class="navbtn" id="nextBtn" '+(phys>=DATA.pageCount-1?'disabled':'')+'>›</button>' +
+          '<form class="jumpform" id="jumpForm">' +
+            '<input id="jumpInput" type="number" min="1" placeholder="쪽" value="'+(DATA.printedOf[phys]||'')+'">' +
+            '<button type="submit">이동</button>' +
+          '</form>' +
+        '</div>' +
+        '<div class="pagetext">'+ highlightText(text, highlight) +'</div>' +
+      '</div>';
+    mainView.innerHTML = html;
+
+    document.getElementById('prevBtn').addEventListener('click', function(){ goToPage(phys-1); });
+    document.getElementById('nextBtn').addEventListener('click', function(){ goToPage(phys+1); });
+    document.getElementById('jumpForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      var n = +document.getElementById('jumpInput').value;
+      if(!n) return;
+      var target = DATA.numToPhys[n];
+      if(target==null){
+        for(var d=1; d<6 && target==null; d++){ target = DATA.numToPhys[n+d]; }
+      }
+      if(target!=null) goToPage(target);
+    });
+
+    if(scroll) window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  /* ================= Chat assistant ================= */
+  var chatFab = document.getElementById('chatFab');
+  var chatPanel = document.getElementById('chatPanel');
+  var chatClose = document.getElementById('chatClose');
+  var chatLog = document.getElementById('chatLog');
+  var chatInput = document.getElementById('chatInput');
+  var chatSend = document.getElementById('chatSend');
+  var micBtn = document.getElementById('micBtn');
+
+  var sampleFn = null, sampleTried = false;
+  var chatHistory = [];
+  var chatBusy = false;
+  var chatOpened = false;
+  var recognition = null, listening = false;
+
+  var EXAMPLE_QS = [
+    '고위험 임산부 의료비 지원대상이 누구인가요?',
+    '난임부부 시술비는 어떻게 청구하나요?',
+    '국민행복카드 신청 서류가 뭐예요?',
+    '기저귀·조제분유 지원 소득기준이 어떻게 되나요?'
+  ];
+
+  var INSTR_HEAD =
+    '당신은 대한민국 보건복지부가 발간한 <2026년 모자보건사업 안내> 자료를 바탕으로, ' +
+    '보건소 등 실무 담당자의 질문에 답하는 업무 도우미입니다.\n' +
+    '아래 [발췌문]은 실제 자료에서 검색된 관련 내용입니다. 반드시 발췌문 내용에 근거해서만 답변하고, ' +
+    '발췌문에서 확인할 수 없는 내용은 추측하지 말고 "자료에서 관련 내용을 찾지 못했습니다. 목차에서 관련 항목을 직접 확인해 주세요." 라고 답하세요.\n' +
+    '실무자가 바로 활용할 수 있도록 간결하고 명확하게, 필요하면 항목을 나눠서 한국어로 답변하세요. ' +
+    '인사말이나 불필요한 서두 없이 바로 답변 내용을 작성하세요. 발췌문에 없는 근거는 만들어내지 마세요.\n\n[발췌문]\n';
+
+  function toggleChat(open){
+    chatPanel.hidden = !open;
+    if(open){
+      chatFab.querySelector('.dot').style.display = 'none';
+      if(!chatOpened){
+        chatOpened = true;
+        var intro = appendMsg('system', '자료 내용을 바탕으로 질문에 답해드려요. 아래 예시를 눌러보거나 직접 물어보세요.');
+        var ex = document.createElement('div');
+        ex.className = 'chat-examples';
+        EXAMPLE_QS.forEach(function(q){
+          var b = document.createElement('button');
+          b.className = 'chat-ex-chip';
+          b.textContent = q;
+          b.addEventListener('click', function(){ chatInput.value = q; sendChat(); });
+          ex.appendChild(b);
+        });
+        intro.appendChild(document.createElement('br'));
+        intro.appendChild(ex);
+      }
+      setTimeout(function(){ chatInput.focus(); }, 50);
+    }
+  }
+  chatFab.addEventListener('click', function(){ toggleChat(chatPanel.hidden); });
+  chatClose.addEventListener('click', function(){ toggleChat(false); });
+
+  function appendMsg(role, text){
+    var div = document.createElement('div');
+    div.className = 'msg ' + role;
+    div.textContent = text;
+    chatLog.appendChild(div);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    return div;
+  }
+
+  async function ensureSample(){
+    if(sampleTried) return sampleFn;
+    sampleTried = true;
+    try{
+      sampleFn = (window.claude && typeof window.claude.use === 'function') ? await window.claude.use('sample') : null;
+    }catch(e){ sampleFn = null; }
+    return sampleFn;
+  }
+
+  function tokenize(q){
+    var raw = q.match(/[가-힣]{2,}/g) || [];
+    var set = {};
+    raw.forEach(function(w){
+      set[w] = 1;
+      if(w.length >= 3) set[w.slice(0, -1)] = 1;
+      if(w.length >= 5) set[w.slice(0, -2)] = 1;
+    });
+    return Object.keys(set);
+  }
+
+  function retrieveContext(question, topN){
+    var tokens = tokenize(question);
+    if(!tokens.length) return [];
+    var scores = new Array(PAGES.length).fill(0);
+    var occ = new Array(PAGES.length).fill(0);
+    tokens.forEach(function(tok){
+      for(var i=0;i<PAGES.length;i++){
+        var text = PAGES[i];
+        if(!text) continue;
+        var c = 0, pos = 0;
+        while(true){ var j = text.indexOf(tok, pos); if(j<0) break; c++; pos = j+tok.length; }
+        if(c>0){ scores[i]++; occ[i]+=c; }
+      }
+    });
+    var idxs = [];
+    for(var i=0;i<PAGES.length;i++) if(scores[i]>0) idxs.push(i);
+    idxs.sort(function(a,b){ return scores[b]-scores[a] || occ[b]-occ[a]; });
+    return idxs.slice(0, topN||4);
+  }
+
+  function buildExcerpts(idxs){
+    return idxs.map(function(i){
+      var bc = chapterOf(i);
+      var printed = DATA.printedOf[i];
+      var label = (bc.chapter||'') + (bc.section ? ' > '+bc.section : '') + (printed ? ' ('+printed+'쪽)' : '');
+      var clean = PAGES[i].replace(/[ \t]+/g,' ').replace(/\n{2,}/g,'\n').trim();
+      if(clean.length > 1000) clean = clean.slice(0,1000) + '…';
+      return '◆ ' + label + '\n' + clean;
+    }).join('\n\n');
+  }
+
+  function addRefChips(container, idxs){
+    if(!idxs.length) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'chat-refs';
+    idxs.forEach(function(i){
+      var chip = document.createElement('button');
+      chip.className = 'chat-ref-chip';
+      chip.textContent = (DATA.printedOf[i] ? DATA.printedOf[i]+'쪽' : '원문') + ' 보기';
+      chip.addEventListener('click', function(){ toggleChat(false); goToPage(i); });
+      wrap.appendChild(chip);
+    });
+    container.appendChild(wrap);
+  }
+
+  async function sendChat(){
+    var q = chatInput.value.trim();
+    if(!q || chatBusy) return;
+    chatInput.value = '';
+    appendMsg('user', q);
+    chatBusy = true;
+    chatSend.disabled = true;
+
+    var idxs = retrieveContext(q, 4);
+
+    if(idxs.length === 0){
+      appendMsg('bot', '관련 내용을 자료에서 찾지 못했어요. 다른 표현으로 다시 질문해보시거나, 위 검색창을 이용해보세요.');
+      chatBusy = false; chatSend.disabled = false;
+      return;
+    }
+
+    var fn = await ensureSample();
+    var botDiv = appendMsg('bot', '생각 중…');
+    botDiv.classList.add('thinking');
+
+    if(!fn){
+      botDiv.classList.remove('thinking');
+      botDiv.textContent = '이 화면에서는 AI 답변 기능을 사용할 수 없어, 관련 있어 보이는 원문 쪽을 찾아드렸어요:';
+      addRefChips(botDiv, idxs);
+      chatBusy = false; chatSend.disabled = false;
+      return;
+    }
+
+    var turns = [{role:'user', content: INSTR_HEAD + buildExcerpts(idxs)}];
+    var histSlice = chatHistory.slice(-6);
+    turns = turns.concat(histSlice).concat([{role:'user', content:q}]);
+
+    var ctl = new AbortController();
+    try{
+      var res = await fn(turns, {
+        signal: ctl.signal,
+        modelTier: 'default',
+        cache: false,
+        onText: function(u){
+          botDiv.classList.remove('thinking');
+          botDiv.textContent = u.text;
+          chatLog.scrollTop = chatLog.scrollHeight;
+        }
+      });
+      botDiv.classList.remove('thinking');
+      botDiv.textContent = res.text;
+      addRefChips(botDiv, idxs);
+      chatHistory.push({role:'user', content:q});
+      chatHistory.push({role:'assistant', content:res.text});
+    }catch(e){
+      botDiv.classList.remove('thinking');
+      var msg = '답변을 가져오지 못했어요. 잠시 후 다시 시도해주세요.';
+      if(e && e.code === 'not_granted') msg = 'AI 답변 기능 사용에 동의하지 않으셨어요. 위 검색창으로 찾아보실 수 있어요.';
+      else if(e && e.code === 'rate_limited') msg = '요청이 많아요. 잠시 후 다시 시도해주세요.';
+      else if(e && e.code === 'cancelled') msg = '요청을 취소했어요.';
+      else if(e && e.text) msg = e.text;
+      botDiv.textContent = msg;
+      addRefChips(botDiv, idxs);
+    } finally {
+      chatBusy = false; chatSend.disabled = false;
+    }
+  }
+
+  chatSend.addEventListener('click', sendChat);
+  chatInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); sendChat(); }
+  });
+
+  function initSpeech(){
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!SR) return;
+    try{
+      recognition = new SR();
+    }catch(e){ return; }
+    recognition.lang = 'ko-KR';
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+    micBtn.hidden = false;
+
+    recognition.onstart = function(){
+      listening = true;
+      micBtn.classList.add('listening');
+      chatInput.placeholder = '듣고 있어요…';
+    };
+    recognition.onerror = function(){
+      listening = false;
+      micBtn.classList.remove('listening');
+      chatInput.placeholder = '예: 고위험 임산부 지원대상이 누구인가요?';
+    };
+    recognition.onend = function(){
+      listening = false;
+      micBtn.classList.remove('listening');
+      chatInput.placeholder = '예: 고위험 임산부 지원대상이 누구인가요?';
+    };
+    recognition.onresult = function(e){
+      var text = '';
+      for(var i=e.resultIndex;i<e.results.length;i++){ text += e.results[i][0].transcript; }
+      chatInput.value = text;
+      var last = e.results[e.results.length-1];
+      if(last && last.isFinal && text.trim()){
+        sendChat();
+      }
+    };
+    micBtn.addEventListener('click', function(){
+      if(listening){ recognition.stop(); return; }
+      try{ recognition.start(); }catch(e){}
+    });
+  }
+  initSpeech();
+})();
+</script>
+</body>
+</html>
