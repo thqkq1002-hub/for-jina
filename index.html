@@ -311,7 +311,7 @@
     text-align:center; color:var(--ink-faint); font-size:11.5px; padding-top:8px;
   }
 
-  .mobile-toc-toggle{display:none}
+  .sidebar-toggle{display:none}
 
   @media (max-width:860px){
     .layout{flex-direction:column}
@@ -320,6 +320,37 @@
     }
     .stats{display:none}
     .hero-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+
+    .sidebar-toggle{
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      width:100%; border:1px solid var(--line-strong); background:var(--surface);
+      color:var(--ink); border-radius:12px; padding:13px 16px; font-size:14px;
+      font-weight:700; cursor:pointer; box-shadow:var(--shadow);
+    }
+    .sidebar-toggle .car{font-size:11px; color:var(--ink-faint); transition:transform .15s}
+    .sidebar-toggle.open .car{transform:rotate(180deg)}
+    .sidebar{
+      display:none; overflow:visible;
+    }
+    .sidebar.open{display:flex}
+  }
+
+  @media (max-width:600px){
+    .brand-text h1{font-size:16.5px; line-height:1.35}
+    .brand-text p{font-size:11.5px}
+    .hero{padding:18px}
+    .hero h2{font-size:17px}
+    .hero p{font-size:13.5px}
+    .card{padding:16px}
+    .pagetext{font-size:15.5px; line-height:1.9; padding:18px 14px}
+    .result-snippet{font-size:13.5px; line-height:1.65}
+    .chip{padding:8px 13px; font-size:13px}
+    .navbtn{width:40px; height:40px; font-size:16px}
+    .jumpform input{width:52px; padding:9px 6px}
+    .jumpform button{padding:9px 12px}
+    .page-crumb .c2{font-size:14.5px}
+    .chat-send, .mic-btn{width:40px; height:40px}
+    .chat-inputrow input{font-size:15px; padding:11px 12px}
   }
 
   /* ---------- Chat assistant ---------- */
@@ -430,7 +461,11 @@
   </div>
 
   <div class="layout">
-    <aside class="sidebar">
+    <button class="sidebar-toggle" id="sidebarToggle" type="button">
+      <span>📂 키워드 · 목차 보기</span>
+      <span class="car">▾</span>
+    </button>
+    <aside class="sidebar" id="sidebar">
       <div class="panel" id="keywordPanel">
         <h2>바로가기 키워드</h2>
         <div id="chipgroups"></div>
@@ -507,8 +542,24 @@
     renderChips();
     renderToc();
     bindEvents();
+    bindSidebarToggle();
     routeFromHash();
     window.addEventListener('popstate', routeFromHash);
+  }
+
+  var sidebarToggle = document.getElementById('sidebarToggle');
+  var sidebarEl = document.getElementById('sidebar');
+  function bindSidebarToggle(){
+    sidebarToggle.addEventListener('click', function(){
+      var open = sidebarEl.classList.toggle('open');
+      sidebarToggle.classList.toggle('open', open);
+    });
+  }
+  function closeSidebarOnMobile(){
+    if(window.innerWidth <= 860){
+      sidebarEl.classList.remove('open');
+      sidebarToggle.classList.remove('open');
+    }
   }
 
   function setHash(h){
@@ -537,6 +588,7 @@
       var btn = e.target.closest('.chip');
       if(!btn) return;
       runSearch(btn.getAttribute('data-q'));
+      closeSidebarOnMobile();
       window.scrollTo({top:0, behavior:'smooth'});
     });
   }
@@ -567,6 +619,7 @@
         if(!wasOpen){
           var ci = +wrap.getAttribute('data-ci');
           goToPage(DATA.toc[ci].physicalPage);
+          closeSidebarOnMobile();
         }
         return;
       }
@@ -575,6 +628,7 @@
         var ci2 = +secBtn.getAttribute('data-ci');
         var si2 = +secBtn.getAttribute('data-si');
         goToPage(DATA.toc[ci2].sections[si2].physicalPage);
+        closeSidebarOnMobile();
       }
     });
   }
